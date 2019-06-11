@@ -14,7 +14,4 @@
     * p5.js or paper.js for visuaizations
     * webpack to bundle scripts
     ...
-Implementation Timeline
-    * Most important category
-    * Daily breakdown
-    * Aim to be done by Friday
+* Implementation Timeline

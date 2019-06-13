@@ -1,65 +1,19 @@
-//p5.sound examples
+// window.addEventListener('load', init, false);
+// function init() {
 
-// var cnv, soundFile, fft, peakDetect;
-// var ellipseWidth = 10;
+//   //resume from suspension - no autoplay default
+//   document.getElementById('play-button').addEventListener('click', () => {
+//     part.loop();
+//   });
 
-// function preload() {
-//   soundFile = loadSound('sounds/kick.wav');
-// }
 
-// function setup() {
-//   createCanvas(620, 480);
-//   background(0);
-//   noStroke();
-//   fill(255);
-//   textAlign(CENTER);
 
-//   // p5.PeakDetect requires a p5.FFT
-//   fft = new p5.FFT();
-//   peakDetect = new p5.PeakDetect();
-// }
-
-// function draw() {
-//   background(0);
-//   text('click to play/pause', width / 2, height / 2);
-
-//   // peakDetect accepts an fft post-analysis
-//   fft.analyze();
-//   peakDetect.update(fft);
-
-//   if (peakDetect.isDetected) {
-//     ellipseWidth = 50;
-//   } else {
-//     ellipseWidth *= 0.95;
-//   }
-
-//   ellipse(width / 2, height / 2, ellipseWidth, ellipseWidth);
-// }
-
-// // toggle play/stop when canvas is clicked
-// function mouseClicked() {
-//   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-//     if (soundFile.isPlaying()) {
-//       soundFile.stop();
-//     } else {
-//       soundFile.play();
-//     }
-//   }
 // }
 
 
-
-
-/**
- *  Create a sequence using a Part.
- *  Add two Phrases to the part, and tell the part to loop.
- *
- *  The callback includes parameters (the value at that position in the Phrase array)
- *  as well as time, which should be used to schedule playback with precision.
- */
 
 var osc, env; // used by playNote
-var noise, noiseEnv; // used by playSnare
+let noise, noiseEnv; // used by playSnare
 var part; // a part we will loop
 var currentBassNote = 47;
 

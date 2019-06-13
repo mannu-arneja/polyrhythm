@@ -52,11 +52,11 @@ function setup() {
 
 }
 
-function mouseClicked() {
-  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    part.pause();
-  }
-}
+// function mouseClicked() {
+//   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+//     part.pause();
+//   }
+// }
 
 function playBass(time, params) {
   prevTime = time + getAudioContext().currentTime;
@@ -77,4 +77,11 @@ function draw() {
   fill(255, 0, 0);
   var noteHeight = map(currentBassNote, 40, 50, height, 0);
   ellipse(width / 2, noteHeight, 30, 30);
+}
+
+function touchStarted() {
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+  part.start();
 }

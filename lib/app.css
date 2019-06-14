@@ -1,0 +1,14 @@
+main {
+    display: flex
+}
+
+.main-button {
+    padding: 5px 15px;
+    font-size: 20px;
+    background-color: #dcdcdc;
+    border: none;
+}
+
+.main-button:focus {
+    outline:0;
+}

@@ -8,20 +8,21 @@ function init() {
     }
     if (part.isPlaying) {
       part.pause();
+      increment = 0;
       document.getElementById('play-button').value = 'play'
     } else {
       part.start();
+      increment = 1.6;
       document.getElementById('play-button').value = 'pause'
     }
   });
   
 }
 
-
-
-let osc, env; // used by playNote
-let noise, noiseEnv; // used by playSnare
-let part; // a part we will loop
+// p5 Part Loop
+let osc, env; // playNote
+let noise, noiseEnv; // playSnare
+let part;
 let currentBassNote = 47;
 
 let prevTime = 0;
@@ -30,9 +31,10 @@ function setup() {
 
   createCanvas(620, 480);
 
-  // tracks
+  // track settings
   angle = radians(0);
-  fps = 30;
+  fps = 60;
+  increment = 0
 
   // prepare the osc and env used by playNote()
   env = new p5.Envelope(0.01, 0.8, 0.2, 0);
@@ -44,9 +46,9 @@ function setup() {
 
   // prepare the noise and env used by playSnare()
   noise = new p5.Noise();
-  // noise.amp(0.0);
+  noise.amp(0.0);
   noise.start();
-  noiseEnv = new p5.Env(0.01, 0.5, 0.1, 0);
+  noiseEnv = new p5.Env(0.01, 0.3, 0.1, 0);
   noiseEnv.setInput(noise);
 
   // create a part with 8 spaces, where each space represents 1/16th note (default)
@@ -54,8 +56,9 @@ function setup() {
 
   // add phrases, with a name, a callback, and
   // an array of values that will be passed to the callback if > 0
-  part.addPhrase('snare', playSnare, [0, 0, 1, 0, 0, 0, 1, 1]);
-  part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
+  part.addPhrase('snare', playSnare, [1, 0, 0, 0, 1, 0, 0, 0]);
+  part.addPhrase('bass', playBass, [42, 0, 0, 42, 0, 0, 42, 0]);
+  // part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
 
   // // set tempo (Beats Per Minute) of the part and tell it to loop
   part.setBPM(60);
@@ -106,15 +109,19 @@ function draw () {
   // origin
   translate(width / 2, height / 2)
 
-  // rotation settings
+  // play head
+  line(125, 0, 140, 0)
+  
+  // rotation settings --need adjustment
   frameRate(fps);
-  angle += radians(3);
+  angle += radians(increment);
   rotate(angle);
 
   //track settings
   stroke(0);
   strokeWeight(2);
   fill(0, 130, 210, 255);
+
 
   // 1/4 note track
   arc(0, 0, 250, 250, radians(0), radians(90), PIE)

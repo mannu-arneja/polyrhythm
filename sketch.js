@@ -8,10 +8,12 @@ function init() {
     }
     if (part.isPlaying) {
       part.pause();
+      // console.log(getAudioContext().currentTime);
       increment = 0;
       document.getElementById('play-button').value = 'play'
     } else {
       part.start();
+      // console.log(getAudioContext().currentTime); //always 0
       increment = 1.6;
       document.getElementById('play-button').value = 'pause'
     }
@@ -52,19 +54,20 @@ function setup() {
   noiseEnv.setInput(noise);
 
   // create a part with 8 spaces, where each space represents 1/16th note (default)
-  part = new p5.Part(8, 1 / 16);
+  part = new p5.Part(8, 1 / 4);
+  fourthPart = new p5.Part(4, 1/8)
 
   // add phrases, with a name, a callback, and
   // an array of values that will be passed to the callback if > 0
-  part.addPhrase('snare', playSnare, [1, 0, 0, 0, 1, 0, 0, 0]);
-  part.addPhrase('bass', playBass, [42, 0, 0, 42, 0, 0, 42, 0]);
-  // part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
+  part.addPhrase('snare', playSnare, [1, 0, 1, 0, 1, 0, 1, 0]);
+  // part.addPhrase('bass', playBass, [52, 42, 42, 42, 42, 42, 42, 42, 52, 42, 42, 42, 42, 42, 32, 42]);
+  // part.addPhrase('bass', playBass, [42, 0, 0, 42, 0, 0, 42, 0]);
+  part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
 
   // // set tempo (Beats Per Minute) of the part and tell it to loop
   part.setBPM(60);
   part.loop();
   part.stop();
-
 }
 
 // function mouseClicked() {
@@ -73,9 +76,34 @@ function setup() {
 //   }
 // }
 
+// counter
+let bassCount = 0;
+
+function fourthCount() {
+  console.log(bassCount)
+  bassCount = (bassCount + 1) % 4;
+  switch (bassCount) {
+    case 0:
+      angle = radians(0)
+      break;
+    case 1:
+      angle = radians(90)
+      break;
+    case 2:
+      angle = radians(180)
+      break;
+    case 3:
+      angle = radians(270)
+      break;
+    default:
+      break;
+  }
+}
+
 function playBass(time, params) {
   prevTime = time + getAudioContext().currentTime;
-
+  // console.log(prevTime);
+  fourthCount();
   currentBassNote = params;
   osc.freq(midiToFreq(params), 0 , time);
   env.play(osc, time);
@@ -116,6 +144,11 @@ function draw () {
   frameRate(fps);
   angle += radians(increment);
   rotate(angle);
+
+  
+  // if (getAudioContext().currentTime % 1 < 0.005) {
+  //   angle = radians(0);
+  // }
 
   //track settings
   stroke(0);

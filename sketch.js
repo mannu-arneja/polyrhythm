@@ -1,9 +1,11 @@
+// handle play button
 window.addEventListener('load', init, false);
 function init() {
-
-  //resume from suspension - no autoplay default
   document.getElementById('play-button').addEventListener('click', () => masterPlay());
-  
+  document.getElementById('tempoSlider').addEventListener('input', (e) => {
+    part.setBPM(e.target.valueAsNumber);
+    setIncrement();
+  })
 }
 
 // p5 Part Loop
@@ -16,6 +18,7 @@ let prevTime = 0;
 
 // track settings
 let angle, increment, fps;
+let bpm;
 
 function setup() {
 
@@ -24,7 +27,8 @@ function setup() {
   // init track settings
   angle = radians(0);
   fps = 60;
-  increment = 0
+  increment = 0.1
+  bpm = 60;
 
   // prepare the osc and env used by playNote()
   env = new p5.Envelope(0.01, 0.8, 0.2, 0);
@@ -53,7 +57,8 @@ function setup() {
   part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
 
   // // set tempo (Beats Per Minute) of the part and tell it to loop
-  part.setBPM(120);
+  part.setBPM(bpm);
+
   part.loop();
   part.stop();
 }
@@ -143,9 +148,9 @@ function masterPlay() {
 // (degrees / (bars / bpm * seconds)) / frames) = degrees per frame
 // (360 / (4 / 60 * 60)) / 60
 function setIncrement() {
-
-  let bpm = part.metro.bpm;
-  increment = (360 / (4 / bpm * 60)) / 60
+  increment = 0.1
+  let _bpm = part.metro.bpm;
+  increment += (360 / (4 / _bpm * 60)) / 60
 }
 
 

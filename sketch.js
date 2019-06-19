@@ -174,35 +174,28 @@ function setIncrement() {
 
 
 function draw () {
-
-
-  background(60);
-
-
-  // origin
-  translate(width / 2, height / 2)
+  
+  // canvas
+  background(60); // rgb grey
+  translate(width / 2, height / 2) // origin
 
   // play head
+  strokeWeight(4);
   line(125, 0, 140, 0)
-  
-  // rotation settings --need adjustment
+
+  // rotation settings
   frameRate(fps);
   if (part.isPlaying) {
     angle += increment / fps;
   }
   rotate(angle);
 
-  
-  // if (getAudioContext().currentTime % 1 < 0.005) {
-  //   angle = radians(0);
-  // }
-
   //track settings
   stroke(0);
   strokeWeight(2);
   fill(0, 130, 210, 255);
 
-
+  
   // 1/4 note track
   arc(0, 0, 250, 250, radians(0), radians(90), PIE)
   arc(0, 0, 250, 250, radians(90), radians(180), PIE)
@@ -210,9 +203,9 @@ function draw () {
   arc(0, 0, 250, 250, radians(270), radians(360), PIE)
 
 
+  // 1/3 note track
   fill(40, 130, 80, 255);
   circle(0, 0, 200, 200)
-  // 1/3 note track
   arc(0, 0, 200, 200, radians(0), radians(120), PIE)
   arc(0, 0, 200, 200, radians(120), radians(240), PIE)
   arc(0, 0, 200, 200, radians(240), radians(360), PIE)

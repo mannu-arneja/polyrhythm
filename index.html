@@ -14,7 +14,9 @@
   <body>
     <main class="main-container">
       <input type="button" value="play" id="play-button" class="main-button">
-      <input type="range" id='tempoSlider'min='60.0' max='120.0' step='1' value='60' oninput="bpm = event.target.value">
+      <span class='tempo-slider'>tempo: 
+        <input type="range" id='tempoSlider'min='60.0' max='240.0' step='1' value='120' oninput="bpm = event.target.value">
+      </span>
     </main>
   </body>
 </html>

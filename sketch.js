@@ -2,6 +2,7 @@
 window.addEventListener('load', init, false);
 function init() {
   document.getElementById('play-button').addEventListener('click', () => masterPlay());
+  bpm = document.getElementById('tempoSlider').value
   document.getElementById('tempoSlider').addEventListener('input', (e) => {
     part.setBPM(e.target.valueAsNumber);
     setIncrement();
@@ -20,6 +21,11 @@ let prevTime = 0;
 let angle, increment, fps;
 let bpm;
 
+
+function preload() {
+  kick = loadSound('./sounds/kick.wav');
+}
+
 function setup() {
 
   createCanvas(620, 480);
@@ -27,8 +33,8 @@ function setup() {
   // init track settings
   angle = radians(0);
   fps = 60;
-  increment = 0.1
-  bpm = 60;
+  increment = 0;
+  // bpm = 60;
 
   // prepare the osc and env used by playNote()
   env = new p5.Envelope(0.01, 0.8, 0.2, 0);
@@ -47,17 +53,20 @@ function setup() {
 
   // create a part with 8 spaces, where each space represents 1/16th note (default)
   part = new p5.Part(8, 1 / 4);
-  fourthPart = new p5.Part(4, 1/8)
+  // fourthPart = new p5.Part(4, 1/8)
 
   // add phrases, with a name, a callback, and
   // an array of values that will be passed to the callback if > 0
+  // part.addPhrase('kick', playKick, [1,0,0])
   part.addPhrase('snare', playSnare, [1, 0, 1, 0, 1, 0, 1, 0]);
   // part.addPhrase('bass', playBass, [52, 42, 42, 42, 42, 42, 42, 42, 52, 42, 42, 42, 42, 42, 32, 42]);
   // part.addPhrase('bass', playBass, [42, 0, 0, 42, 0, 0, 42, 0]);
   part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
+  // part.addPhrase('bass', playBass, [47, 0, 0, 0, 45, 0, 0, 0, 45, 0, 0, 0, 40, 0, 0, 0]);
 
   // // set tempo (Beats Per Minute) of the part and tell it to loop
   part.setBPM(bpm);
+  masterVolume(1);
 
   part.loop();
   part.stop();
@@ -74,7 +83,7 @@ let bassCount = 0;
 
 function fourthCount() {
   console.log(bassCount)
-  bassCount = (bassCount + 1) % 4;
+
   switch (bassCount) {
     case 0:
       angle = radians(0)
@@ -91,6 +100,12 @@ function fourthCount() {
     default:
       break;
   }
+  bassCount = (bassCount + 1) % 4;
+}
+
+function playKick(time, playbackRate) {
+  kick.rate(playbackRate);
+  kick.play(time);
 }
 
 function playBass(time, params) {
@@ -148,9 +163,12 @@ function masterPlay() {
 // (degrees / (bars / bpm * seconds)) / frames) = degrees per frame
 // (360 / (4 / 60 * 60)) / 60
 function setIncrement() {
-  increment = 0.1
+  increment = 0.07
   let _bpm = part.metro.bpm;
-  increment += (360 / (4 / _bpm * 60)) / 60
+  // increment += (360 / (4 / _bpm * 60)) / 60
+  increment += radians(360 / (4 / _bpm * 60))
+
+  // console.log(increment)
 }
 
 
@@ -158,7 +176,7 @@ function setIncrement() {
 function draw () {
 
 
-  background(220);
+  background(60);
 
 
   // origin
@@ -169,7 +187,9 @@ function draw () {
   
   // rotation settings --need adjustment
   frameRate(fps);
-  angle += radians(increment);
+  if (part.isPlaying) {
+    angle += increment / fps;
+  }
   rotate(angle);
 
   
@@ -198,11 +218,8 @@ function draw () {
   arc(0, 0, 200, 200, radians(240), radians(360), PIE)
 
 
-  fill(220);
+  fill(60);
   circle(0, 0, 100, 100);
 
-
-  fill(220);
-  circle(0, 0, 100, 100);
 
 }

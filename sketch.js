@@ -2,22 +2,7 @@ window.addEventListener('load', init, false);
 function init() {
 
   //resume from suspension - no autoplay default
-  document.getElementById('play-button').addEventListener('click', () => {
-    if (getAudioContext().state !== 'running') {
-      getAudioContext().resume();
-    }
-    if (part.isPlaying) {
-      part.pause();
-      // console.log(getAudioContext().currentTime);
-      increment = 0;
-      document.getElementById('play-button').value = 'play'
-    } else {
-      part.start();
-      // console.log(getAudioContext().currentTime); //always 0
-      increment = 1.6;
-      document.getElementById('play-button').value = 'pause'
-    }
-  });
+  document.getElementById('play-button').addEventListener('click', () => masterPlay());
   
 }
 
@@ -29,11 +14,14 @@ let currentBassNote = 47;
 
 let prevTime = 0;
 
+// track settings
+let angle, increment, fps;
+
 function setup() {
 
   createCanvas(620, 480);
 
-  // track settings
+  // init track settings
   angle = radians(0);
   fps = 60;
   increment = 0
@@ -65,7 +53,7 @@ function setup() {
   part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
 
   // // set tempo (Beats Per Minute) of the part and tell it to loop
-  part.setBPM(60);
+  part.setBPM(120);
   part.loop();
   part.stop();
 }
@@ -102,8 +90,9 @@ function fourthCount() {
 
 function playBass(time, params) {
   prevTime = time + getAudioContext().currentTime;
-  // console.log(prevTime);
+
   fourthCount();
+
   currentBassNote = params;
   osc.freq(midiToFreq(params), 0 , time);
   env.play(osc, time);
@@ -129,8 +118,41 @@ function playSnare(time, params) {
   // part.start();
 // }
 
+function keyReleased() {
+  if (key === ' ') masterPlay();
+}
+
+function masterPlay() {
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+  if (part.isPlaying) {
+    part.pause();
+    // console.log(getAudioContext().currentTime);
+    increment = 0;
+    document.getElementById('play-button').value = 'play'
+  } else {
+    part.start();
+    // console.log(getAudioContext().currentTime); //always 0
+    setIncrement();
+    document.getElementById('play-button').value = 'pause'
+  }
+}
+
+// calculate increment value per draw
+// (degrees / (bars / bpm * seconds)) / frames) = degrees per frame
+// (360 / (4 / 60 * 60)) / 60
+function setIncrement() {
+
+  let bpm = part.metro.bpm;
+  increment = (360 / (4 / bpm * 60)) / 60
+}
+
+
 
 function draw () {
+
+
   background(220);
 
 

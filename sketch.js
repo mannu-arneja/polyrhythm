@@ -54,17 +54,17 @@ function setup() {
   noiseEnv.setInput(noise);
 
   // create a part with 8 spaces, where each space represents 1/16th note (default)
-  part = new p5.Part(8, 1 / 4);
+  part = new p5.Part(16, 1 / 16);
   // fourthPart = new p5.Part(4, 1/8)
 
   // add phrases, with a name, a callback, and
   // an array of values that will be passed to the callback if > 0
-  // part.addPhrase('kick', playKick, [1,0,0])
-  part.addPhrase('snare', playSnare, [1, 0, 1, 0, 1, 0, 1, 0]);
+  // part.addPhrase('kick', playKick, [1,0,0,0,0])
+  // part.addPhrase('snare', playSnare, [1, 0, 1, 0, 1, 0, 1, 0]);
   // part.addPhrase('bass', playBass, [52, 42, 42, 42, 42, 42, 42, 42, 52, 42, 42, 42, 42, 42, 32, 42]);
   // part.addPhrase('bass', playBass, [42, 0, 0, 42, 0, 0, 42, 0]);
-  part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
-  // part.addPhrase('bass', playBass, [47, 0, 0, 0, 45, 0, 0, 0, 45, 0, 0, 0, 40, 0, 0, 0]);
+  // part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
+  part.addPhrase('bass', playBass, [47, 0, 0, 0, 45, 0, 0, 0, 45, 0, 0, 0, 40, 0, 0, 0]);
 
   // // set tempo (Beats Per Minute) of the part and tell it to loop
   part.setBPM(bpm);
@@ -73,58 +73,46 @@ function setup() {
   part.stop();
 }
 
-
-// counter, resync interval - fourths
+// resync interval functions ----------------------------------
 let bassCount = 0;
 
 function fourthCount() {
-  console.log(bassCount)
-
-  switch (bassCount) {
-    case 0:
-      angle = radians(0)
-      break;
-    case 1:
-      angle = radians(90)
-      break;
-    case 2:
-      angle = radians(180)
-      break;
-    case 3:
-      angle = radians(270)
-      break;
-    default:
-      break;
-  }
+  // console.log(bassCount)
+  let deg = [0,90,180,270]
+  angle = radians(deg[bassCount])
+  redraw();
   bassCount = (bassCount + 1) % 4;
 }
 
+let fifthTick = 0
+function fifthCount() {
+  console.log(fifthTick)
+  let deg = [0,72,144,216,288];
+  angle = radians(deg[fifthTick]);
+  fifthTick = (fifthTick+1) % 5;
+  redraw();
+}
+
 function playKick(time, playbackRate) {
+  prevTime = time + getAudioContext().currentTime;
   kick.rate(playbackRate);
   kick.play(time);
+  fifthCount();
 }
 
 function playBass(time, params) {
-  fourthCount();
   
   prevTime = time + getAudioContext().currentTime;
   currentBassNote = params;
   osc.freq(midiToFreq(params), 0 , time);
   env.play(osc, time);
+  fourthCount();
 }
-
 
 function playSnare(time, params) {
   noiseEnv.play(noise, time);
 }
 
-// draw a ball mapped to current note height
-// function draw() {
-//   background(255);
-//   fill(255, 0, 0);
-//   var noteHeight = map(currentBassNote, 40, 50, height, 0);
-//   ellipse(width / 2, noteHeight, 30, 30);
-// }
 
 function touchStarted() {
   if (getAudioContext().state !== 'running') {
@@ -157,7 +145,7 @@ function masterPlay() {
 // (degrees / (bars / bpm * seconds)) / frames) = degrees per frame
 // (360 / (4 / 60 * 60)) / 60
 function setIncrement() {
-  increment = 0.07
+  increment = 0.05
   let _bpm = part.metro.bpm;
   // increment += (360 / (4 / _bpm * 60)) / 60
   increment += radians(360 / (4 / _bpm * 60))
@@ -172,7 +160,7 @@ function draw () {
 
   // play head
   strokeWeight(4);
-  line(125, 0, 140, 0)
+  line(200, 0, 225, 0)
 
   // rotation settings
   frameRate(fps);
@@ -184,14 +172,22 @@ function draw () {
   //track settings
   stroke(0);
   strokeWeight(2);
-  fill(0, 130, 210, 255);
-
   
+  // // 1/5 note track
+  fill(200, 50, 50, 255);
+  let deg = [0, 72, 144, 216, 288, 360];
+  arc(0, 0, 400, 400, radians(deg[0]), radians(deg[1]), PIE);
+  arc(0, 0, 400, 400, radians(deg[1]), radians(deg[2]), PIE);
+  arc(0, 0, 400, 400, radians(deg[2]), radians(deg[3]), PIE);
+  arc(0, 0, 400, 400, radians(deg[3]), radians(deg[4]), PIE);
+  arc(0, 0, 400, 400, radians(deg[4]), radians(deg[5]), PIE);
+
   // 1/4 note track
-  arc(0, 0, 250, 250, radians(0), radians(90), PIE)
-  arc(0, 0, 250, 250, radians(90), radians(180), PIE)
-  arc(0, 0, 250, 250, radians(180), radians(270), PIE)
-  arc(0, 0, 250, 250, radians(270), radians(360), PIE)
+  fill(0, 130, 210, 255);
+  arc(0, 0, 300, 300, radians(0), radians(90), PIE)
+  arc(0, 0, 300, 300, radians(90), radians(180), PIE)
+  arc(0, 0, 300, 300, radians(180), radians(270), PIE)
+  arc(0, 0, 300, 300, radians(270), radians(360), PIE)
 
 
   // 1/3 note track

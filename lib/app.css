@@ -18,7 +18,14 @@ main {
 }
 
 .tempo-slider {
+    display: flex;
+    align-items: center;
     color: white;
     padding: 15px 20px;
     font-size: 20px;
+}
+
+#tempoVal {
+    margin: 0 10px;
+    width: 30px;
 }

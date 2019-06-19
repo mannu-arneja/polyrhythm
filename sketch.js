@@ -6,7 +6,9 @@ function init() {
   document.getElementById('tempoSlider').addEventListener('input', (e) => {
     part.setBPM(e.target.valueAsNumber);
     setIncrement();
+    document.getElementById('tempoVal').innerHTML = bpm
   })
+  document.getElementById('tempoVal').innerHTML = bpm
 }
 
 // p5 Part Loop
@@ -67,18 +69,12 @@ function setup() {
   // // set tempo (Beats Per Minute) of the part and tell it to loop
   part.setBPM(bpm);
   masterVolume(1);
-
   part.loop();
   part.stop();
 }
 
-// function mouseClicked() {
-//   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-//     part.pause();
-//   }
-// }
 
-// counter
+// counter, resync interval - fourths
 let bassCount = 0;
 
 function fourthCount() {
@@ -109,10 +105,9 @@ function playKick(time, playbackRate) {
 }
 
 function playBass(time, params) {
-  prevTime = time + getAudioContext().currentTime;
-
   fourthCount();
-
+  
+  prevTime = time + getAudioContext().currentTime;
   currentBassNote = params;
   osc.freq(midiToFreq(params), 0 , time);
   env.play(osc, time);
@@ -131,12 +126,11 @@ function playSnare(time, params) {
 //   ellipse(width / 2, noteHeight, 30, 30);
 // }
 
-// function touchStarted() {
-  // if (getAudioContext().state !== 'running') {
-  //   getAudioContext().resume();
-  // }
-  // part.start();
-// }
+function touchStarted() {
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+}
 
 function keyReleased() {
   if (key === ' ') masterPlay();
@@ -167,10 +161,7 @@ function setIncrement() {
   let _bpm = part.metro.bpm;
   // increment += (360 / (4 / _bpm * 60)) / 60
   increment += radians(360 / (4 / _bpm * 60))
-
-  // console.log(increment)
 }
-
 
 
 function draw () {

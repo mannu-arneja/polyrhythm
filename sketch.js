@@ -4,7 +4,9 @@ function init() {
   document.getElementById('play-button').addEventListener('click', () => masterPlay());
   bpm = document.getElementById('tempoSlider').value
   document.getElementById('tempoSlider').addEventListener('input', (e) => {
-    part.setBPM(e.target.valueAsNumber);
+    bpm = e.target.valueAsNumber;
+    part.setBPM(bpm);
+    fifthPart.setBPM(bpm);
     setIncrement();
     document.getElementById('tempoVal').innerHTML = bpm
   })
@@ -14,7 +16,7 @@ function init() {
 // p5 Part Loop
 let osc, env; // playNote
 let noise, noiseEnv; // playSnare
-let part;
+let part, fifthPart;
 let currentBassNote = 47;
 
 let prevTime = 0;
@@ -36,7 +38,6 @@ function setup() {
   angle = radians(0);
   fps = 60;
   increment = 0;
-  // bpm = 60;
 
   // prepare the osc and env used by playNote()
   env = new p5.Envelope(0.01, 0.8, 0.2, 0);
@@ -54,39 +55,43 @@ function setup() {
   noiseEnv.setInput(noise);
 
   // create a part with 8 spaces, where each space represents 1/16th note (default)
-  part = new p5.Part(16, 1 / 16);
+  part = new p5.Part(1, 1 / 4);
+  fifthPart = new p5.Part(5, 1 / 4);
   // fourthPart = new p5.Part(4, 1/8)
 
   // add phrases, with a name, a callback, and
   // an array of values that will be passed to the callback if > 0
-  // part.addPhrase('kick', playKick, [1,0,0,0,0])
+  // fifthPart.addPhrase('kick', playKick, [1,1,1,1,1])
   // part.addPhrase('snare', playSnare, [1, 0, 1, 0, 1, 0, 1, 0]);
   // part.addPhrase('bass', playBass, [52, 42, 42, 42, 42, 42, 42, 42, 52, 42, 42, 42, 42, 42, 32, 42]);
-  // part.addPhrase('bass', playBass, [42, 0, 0, 42, 0, 0, 42, 0]);
+  part.addPhrase('bass', playBass, [40]);
   // part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
-  part.addPhrase('bass', playBass, [47, 0, 0, 0, 45, 0, 0, 0, 45, 0, 0, 0, 40, 0, 0, 0]);
+  // part.addPhrase('bass', playBass, [47, 0, 0, 0, 45, 0, 0, 0, 45, 0, 0, 0, 40, 0, 0, 0]);
 
   // // set tempo (Beats Per Minute) of the part and tell it to loop
   part.setBPM(bpm);
+  fifthPart.setBPM(bpm);
   masterVolume(1);
   part.loop();
   part.stop();
+  fifthPart.loop();
+  fifthPart.stop();
 }
 
-// resync interval functions ----------------------------------
+// resync interval functions ---------------------------------------------------
 let bassCount = 0;
 
 function fourthCount() {
-  // console.log(bassCount)
+  console.log("fouth: "+bassCount)
   let deg = [0,90,180,270]
   angle = radians(deg[bassCount])
   redraw();
   bassCount = (bassCount + 1) % 4;
 }
 
-let fifthTick = 0
+let fifthTick = 0;
 function fifthCount() {
-  console.log(fifthTick)
+  console.log("fifth: "+fifthTick)
   let deg = [0,72,144,216,288];
   angle = radians(deg[fifthTick]);
   fifthTick = (fifthTick+1) % 5;
@@ -124,23 +129,6 @@ function keyReleased() {
   if (key === ' ') masterPlay();
 }
 
-function masterPlay() {
-  if (getAudioContext().state !== 'running') {
-    getAudioContext().resume();
-  }
-  if (part.isPlaying) {
-    part.pause();
-    // console.log(getAudioContext().currentTime);
-    increment = 0;
-    document.getElementById('play-button').value = 'play'
-  } else {
-    part.start();
-    // console.log(getAudioContext().currentTime); //always 0
-    setIncrement();
-    document.getElementById('play-button').value = 'pause'
-  }
-}
-
 // calculate increment value per draw
 // (degrees / (bars / bpm * seconds)) / frames) = degrees per frame
 // (360 / (4 / 60 * 60)) / 60
@@ -150,6 +138,27 @@ function setIncrement() {
   // increment += (360 / (4 / _bpm * 60)) / 60
   increment += radians(360 / (4 / _bpm * 60))
 }
+
+// master play function --------------------------------------------------------
+function masterPlay() {
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+  if (part.isPlaying) {
+    part.pause();
+    fifthPart.pause();
+    // console.log(getAudioContext().currentTime);
+    increment = 0;
+    document.getElementById('play-button').value = 'play'
+  } else {
+    part.start();
+    fifthPart.start();
+    // console.log(getAudioContext().currentTime); //always 0
+    setIncrement();
+    document.getElementById('play-button').value = 'pause'
+  }
+}
+
 
 
 function draw () {

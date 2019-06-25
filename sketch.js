@@ -5,14 +5,18 @@ function init() {
   bpm = document.getElementById('tempoSlider').value
   document.getElementById('tempoSlider').addEventListener('mouseup', (e) => {
     bpm = e.target.valueAsNumber;
-    looper4n.bpm = bpm
-    looper3n.bpm = bpm
-    // part.setBPM(bpm);
-    // fifthPart.setBPM(bpm);
-    setIncrement();
+    mySetBPM(bpm);
     document.getElementById('tempoVal').innerHTML = bpm
   })
   document.getElementById('tempoVal').innerHTML = bpm
+  document.getElementById('track-form').addEventListener('submit', (e) => {
+    const formData = new FormData(e.target);
+    div = formData.get('divs');
+    wav = formData.get('sounds');
+    addTrack(div, wav);
+    e.preventDefault();
+  });
+
 }
 
 // p5 Part Loop
@@ -61,15 +65,15 @@ function setup() {
 
   // p5 SoundLoops
   // 4n
-  looper4n = new p5.SoundLoop(function (timeFromNow) {
-    hat.play(timeFromNow);
-  }, "4n");
-  looper4n.bpm = bpm
-  // 3n
-  looper3n = new p5.SoundLoop(function (timeFromNow) {
-    kick.play(timeFromNow);
-  }, "3n");
-  looper3n.bpm = bpm
+  // looper4n = new p5.SoundLoop(function (timeFromNow) {
+  //   hat.play(timeFromNow);
+  // }, "4n");
+  // looper4n.bpm = bpm
+  // // 3n
+  // looper3n = new p5.SoundLoop(function (timeFromNow) {
+  //   kick.play(timeFromNow);
+  // }, "3n");
+  // looper3n.bpm = bpm
 
   masterVolume(1);
 }
@@ -79,7 +83,21 @@ function addTrack(div, wav) {
   let newTrack = new p5.SoundLoop(function (timeFromNow) {
     sounds[wav].play(timeFromNow);
   }, div);
+  newTrack.bpm = bpm
   trackArr.push(newTrack);
+  if (trackArr[0].isPlaying) {
+    trackArr[trackArr.length-1].syncedStart(trackArr[0])
+  }
+}
+
+function mySetBPM(bpm) {
+  for (let i = 0; i < trackArr.length; i++) {
+    trackArr[i].bpm = bpm;
+
+  }
+  increment = 0
+  // increment += (360 / (4 / _bpm * 60)) / 60
+  increment += radians(360 / (4 / bpm * 60))
 }
 
 // master play function --------------------------------------------------------
@@ -90,12 +108,17 @@ function masterPlay() {
 
   if (trackArr.length) {
     if (trackArr[0].isPlaying){
-      trackArr[0].pause();
+      for (let i = 0; i < trackArr.length; i++) {
+        trackArr[i].pause();
+      }
       increment = 0;
       document.getElementById('play-button').value = 'play'
     } else {
+      mySetBPM(bpm)
       trackArr[0].start();
-      setIncrement();
+      for (let i = 1; i < trackArr.length; i++) {
+        trackArr[i].syncedStart(trackArr[0])
+      }
       document.getElementById('play-button').value = 'pause'
     }
   }
@@ -189,12 +212,12 @@ function keyReleased() {
 // calculate increment value per draw
 // (degrees / (bars / bpm * seconds)) / frames) = degrees per frame
 // (360 / (4 / 60 * 60)) / 60
-function setIncrement() {
-  increment = 0
-  let _bpm = looper4n.bpm;
-  // increment += (360 / (4 / _bpm * 60)) / 60
-  increment += radians(360 / (4 / _bpm * 60))
-}
+// function setIncrement() {
+//   increment = 0
+//   let _bpm = looper4n.bpm;
+//   // increment += (360 / (4 / _bpm * 60)) / 60
+//   increment += radians(360 / (4 / _bpm * 60))
+// }
 
 
 
@@ -219,7 +242,7 @@ function draw () {
   
   // test framecount
 
-  if (looper4n.isPlaying) {
+  if (trackArr.length && trackArr[0].isPlaying) {
     if (frameCount % 60 === 0) {
       console.log('tick - seconds')
       // angle = radians((360/(bpm / (4 * 60))));

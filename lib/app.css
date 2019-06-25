@@ -21,11 +21,25 @@ main {
     display: flex;
     align-items: center;
     color: white;
-    padding: 15px 20px;
+    padding: 15px 34px;
     font-size: 20px;
 }
 
 #tempoVal {
     margin: 0 10px;
     width: 30px;
+}
+
+.add-track {
+    display: flex;
+    color: white;
+    padding: 5px 35px;
+}
+
+#track-form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: end;
+    justify-content: space-around;
 }

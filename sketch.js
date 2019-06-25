@@ -27,9 +27,11 @@ let prevTime = 0;
 // track settings
 let angle, increment, fps;
 let bpm;
+let trackArr = [];
 
 // p5 SoundFile Obj
-let kick, hat, snare, tamb, stick;
+let sounds, kick, hat, snare, tamb, stick;
+
 
 function preload() {
   kick = loadSound('./sounds/kick.wav');
@@ -37,6 +39,15 @@ function preload() {
   snare = loadSound('./sounds/snare.wav');
   tamb = loadSound('./sounds/tamb.wav');
   stick = loadSound('./sounds/stick.wav');
+
+  sounds = {
+    "kick": kick,
+    "hat": hat,
+    "snare": snare,
+    "tamb": tamb,
+    "stick": stick
+  };
+  
 }
 
 function setup() {
@@ -60,52 +71,48 @@ function setup() {
   }, "3n");
   looper3n.bpm = bpm
 
-  
-  // prepare the osc and env used by playNote()
-  // env = new p5.Envelope(0.01, 0.8, 0.2, 0);
-  // osc = new p5.TriOsc(); // connects to master output by default
-  // osc.start(0);
-  // osc.connect();
-  // env.setInput(osc);
-
-
-  // prepare the noise and env used by playSnare()
-  // noise = new p5.Noise();
-  // noise.amp(0.0);
-  // noise.start();
-  // noiseEnv = new p5.Env(0.01, 0.3, 0.2, 0);
-  // noiseEnv.setInput(noise);
-
-  // create a part with 8 spaces, where each space represents 1/16th note (default)
-  // part = new p5.Part(1, 1 / 8);
-  // fifthPart = new p5.Part(1, 1 / 8);
-  // fourthPart = new p5.Part(4, 1/8)
-
-  // add phrases, with a name, a callback, and
-  // an array of values that will be passed to the callback if > 0
-  // fifthPart.addPhrase('kick', playKick, [1])
-  // part.addPhrase('snare', playSnare, [1, 0, 1, 0, 1, 0, 1, 0]);
-  // part.addPhrase('bass', playBass, [52, 42, 42, 42, 42, 42, 42, 42, 52, 42, 42, 42, 42, 42, 32, 42]);
-
-  // part.addPhrase('sync', fourthSync, [1,0,0,0])
-  // part.addPhrase('noise', playNoise, [1,0,0,0,0,0,0,0]);
-  // part.addPhrase('8hat', playHat, [1])
-  // part.addPhrase('3kick', playKick, [1,0,0])
-
-  // part.addPhrase('snare', playSnare, [1,0,0,0])
-  // part.addPhrase('bass1', playBass, [45]);
-  // fifthPart.addPhrase('bass', playBass, [50]);
-  // part.addPhrase('bass', playBass, [47, 42, 45, 47, 45, 42, 40, 42]);
-  // part.addPhrase('bass', playBass, [47, 0, 0, 0, 45, 0, 0, 0, 45, 0, 0, 0, 40, 0, 0, 0]);
-
-  // // set tempo (Beats Per Minute) of the part and tell it to loop
-  // part.setBPM(bpm);
-  // fifthPart.setBPM(bpm);
   masterVolume(1);
-  // part.loop();
-  // part.stop();
-  // fifthPart.loop();
-  // fifthPart.stop();
+}
+
+// UI
+function addTrack(div, wav) {
+  let newTrack = new p5.SoundLoop(function (timeFromNow) {
+    sounds[wav].play(timeFromNow);
+  }, div);
+  trackArr.push(newTrack);
+}
+
+// master play function --------------------------------------------------------
+function masterPlay() {
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+
+  if (trackArr.length) {
+    if (trackArr[0].isPlaying){
+      trackArr[0].pause();
+      increment = 0;
+      document.getElementById('play-button').value = 'play'
+    } else {
+      trackArr[0].start();
+      setIncrement();
+      document.getElementById('play-button').value = 'pause'
+    }
+  }
+
+  // if (looper4n.isPlaying) {
+  //   looper4n.pause();
+  //   looper3n.pause();
+  //   // console.log(getAudioContext().currentTime);
+  //   increment = 0;
+  //   document.getElementById('play-button').value = 'play'
+  // } else {
+  //   looper4n.syncedStart(looper3n);
+  //   // startTime = getAudioContext().currentTime;
+  //   // console.log(getAudioContext().currentTime); //always 0
+  //   setIncrement();
+  //   document.getElementById('play-button').value = 'pause'
+  // }
 }
 
 // resync interval functions ---------------------------------------------------
@@ -189,28 +196,7 @@ function setIncrement() {
   increment += radians(360 / (4 / _bpm * 60))
 }
 
-// master play function --------------------------------------------------------
-function masterPlay() {
-  if (getAudioContext().state !== 'running') {
-    getAudioContext().resume();
-  }
 
-  // looper4n.syncedStart(looper3n);
-  
-  if (looper4n.isPlaying) {
-    looper4n.pause();
-    looper3n.pause();
-    // console.log(getAudioContext().currentTime);
-    increment = 0;
-    document.getElementById('play-button').value = 'play'
-  } else {
-    looper4n.syncedStart(looper3n);
-    // startTime = getAudioContext().currentTime;
-    // console.log(getAudioContext().currentTime); //always 0
-    setIncrement();
-    document.getElementById('play-button').value = 'pause'
-  }
-}
 
 // function checkPos() {
 //   // console.log(getAudioContext().currentTime);

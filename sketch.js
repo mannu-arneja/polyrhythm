@@ -252,10 +252,11 @@ function draw () {
 
 
   // canvas
-  background(60); // rgb grey
+  background(104, 104, 104); // 
   translate(width / 2, height / 2) // origin
 
   // play head
+  stroke(164, 155, 165)
   strokeWeight(4);
   line(200, 0, 225, 0)
 
@@ -269,11 +270,12 @@ function draw () {
 
 
   //track settings
-  stroke(0);
-  strokeWeight(2);
+  stroke(0)
+  strokeWeight(3);
   
   // // 1/8 note track
-  fill(200, 50, 50, 255);
+  fill(69, 34, 52);
+  
   let inc;
   for (let i = 0; i < 8; i++) {
     inc = 45;
@@ -290,7 +292,8 @@ function draw () {
   // arc(0, 0, 400, 400, radians(deg[4]), radians(deg[5]), PIE);
 
   // 1/4 note track
-  fill(0, 130, 210, 255);
+  // stroke(59,99,94)
+  fill(76, 59, 77);
   arc(0, 0, 300, 300, radians(0), radians(90), PIE)
   arc(0, 0, 300, 300, radians(90), radians(180), PIE)
   arc(0, 0, 300, 300, radians(180), radians(270), PIE)
@@ -298,14 +301,15 @@ function draw () {
 
 
   // 1/3 note track
-  fill(40, 130, 80, 255);
+  // stroke(32,37,37)
+  fill(80, 73, 80);
   circle(0, 0, 200, 200)
   arc(0, 0, 200, 200, radians(0), radians(120), PIE)
   arc(0, 0, 200, 200, radians(120), radians(240), PIE)
   arc(0, 0, 200, 200, radians(240), radians(360), PIE)
 
-
-  fill(60);
+  // donut
+  fill(104, 104, 104);
   circle(0, 0, 100, 100);
 
 

@@ -274,13 +274,13 @@ function draw () {
   strokeWeight(3);
   
   // // 1/8 note track
-  fill(69, 34, 52);
+  // fill(69, 34, 52);
   
-  let inc;
-  for (let i = 0; i < 8; i++) {
-    inc = 45;
-    arc(0,0,400,400, radians(inc*i), radians(inc*(i+1)), PIE)    
-  }
+  // let inc;
+  // for (let i = 0; i < 8; i++) {
+  //   inc = 45;
+  //   arc(0,0,400,400, radians(inc*i), radians(inc*(i+1)), PIE)    
+  // }
 
   // // // 1/5 note track
   // fill(200, 50, 50, 255);
@@ -293,20 +293,39 @@ function draw () {
 
   // 1/4 note track
   // stroke(59,99,94)
-  fill(76, 59, 77);
-  arc(0, 0, 300, 300, radians(0), radians(90), PIE)
-  arc(0, 0, 300, 300, radians(90), radians(180), PIE)
-  arc(0, 0, 300, 300, radians(180), radians(270), PIE)
-  arc(0, 0, 300, 300, radians(270), radians(360), PIE)
+  // fill(76, 59, 77);
+  // arc(0, 0, 300, 300, radians(0), radians(90), PIE)
+  // arc(0, 0, 300, 300, radians(90), radians(180), PIE)
+  // arc(0, 0, 300, 300, radians(180), radians(270), PIE)
+  // arc(0, 0, 300, 300, radians(270), radians(360), PIE)
 
+  // generator
+  fill(80, 73, 80);
+  if (trackArr.length) {
+    for (let i = trackArr.length-1; i >= 0; i--) {
+      let radius = (i+2)*100;
+      let interval = trackArr[i].interval[0]
+      let arcs = {
+        "1": 359.9,
+        "2": 180,
+        "3": 120,
+        "4": 90,
+        "5": 72,
+        "8": 45,
+      }
+      let arcLen = arcs[interval]
+      for (let i = 0; i < interval; i++) {
+        arc(0,0, radius, radius, radians(arcLen*i), radians(arcLen*(i+1)), PIE);
+      }
+    }
+  }
 
   // 1/3 note track
   // stroke(32,37,37)
-  fill(80, 73, 80);
-  circle(0, 0, 200, 200)
-  arc(0, 0, 200, 200, radians(0), radians(120), PIE)
-  arc(0, 0, 200, 200, radians(120), radians(240), PIE)
-  arc(0, 0, 200, 200, radians(240), radians(360), PIE)
+  // fill(80, 73, 80);
+  // arc(0, 0, 200, 200, radians(0), radians(359.9), PIE)
+  // arc(0, 0, 200, 200, radians(120), radians(240), PIE)
+  // arc(0, 0, 200, 200, radians(240), radians(360), PIE)
 
   // donut
   fill(104, 104, 104);

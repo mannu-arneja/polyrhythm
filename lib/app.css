@@ -1,7 +1,45 @@
+html, body {
+  height: 100%;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #686868;
+}
+
 main {
+    position: relative;
     display: flex;
     background-color: rgb(60, 60,60);
-    width: 620px;
+    width: 660px;
+}
+
+.main-container:before,
+.main-container:after {
+    content: '';
+    position: absolute;
+    border-width: 32px;
+    border-style: solid;
+    border-color: transparent;
+    height: 0;
+    z-index: 10;
+}
+
+.main-container:before {
+    left: 0px;
+    top: 0px;
+    border-top-color: #686868;
+    border-left-color: #686868;
+}
+.main-container:after {
+    right: 0px;
+    bottom: 0px;
+    border-bottom-color: #686868;
+    border-right-color: #686868;
 }
 
 .main-button {
@@ -10,7 +48,7 @@ main {
     background-color: rgb(60, 60, 60);
     border: none;
     color: white;
-    width: 100px;
+    width: 130px;
 }
 
 .main-button:focus {
@@ -21,7 +59,7 @@ main {
     display: flex;
     align-items: center;
     color: white;
-    padding: 15px 34px;
+    padding: 15px 28px;
     font-size: 20px;
 }
 
@@ -40,6 +78,69 @@ main {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    align-items: end;
+    align-items: flex-end;
     justify-content: space-around;
+}
+
+select {
+    background-color: white;
+}
+
+/* logo */
+
+.logo {
+    font: 84px 'Arial Narrow', sans-serif;
+    color: #fefefe;
+    letter-spacing: -4px;
+}
+
+/* stuff for both words */
+.logo span {
+    position: relative;
+}
+.logo span:before,
+.logo span:after {
+    content: '';
+    position: absolute;
+    border-width: 32px;
+    border-style: solid;
+    border-color: transparent;
+    height: 0;
+    z-index: 10;
+}
+
+.logo .word1 {
+    color: #652272;
+    margin-right: -39px;
+    display: inline-block;
+    z-index: 10;
+}
+.logo .word1:before {
+    left: -4px;
+    top: -9px;
+    border-top-color: #686868;
+    border-left-color: #686868;
+}
+.logo .word1:after {
+    right: 22px;
+    bottom: -16px;
+    border-bottom-color: #686868;
+    border-right-color: #686868;
+}
+
+/* stuff for 2nd word */
+.logo .word2 {
+    z-index: 0;
+}
+.logo .word2:before {
+    left: -6px;
+    top: -6px;
+    border-top-color: #686868;
+    border-left-color: #686868;
+}
+.logo .word2:after {
+    right: -10px;  
+    bottom: 4px;
+    border-bottom-color: #686868;
+    border-right-color: #686868;
 }

@@ -51,12 +51,17 @@ function preload() {
     "tamb": tamb,
     "stick": stick
   };
-  
 }
 
 function setup() {
 
   createCanvas(620, 480);
+
+  // check sounds
+  while (!soundsLoaded()) {
+    console.log('loading...');
+  }
+  console.log('all sounds loaded')
 
   // init track settings
   angle = radians(0);
@@ -78,6 +83,10 @@ function setup() {
   masterVolume(1);
 }
 
+function soundsLoaded() {
+  return Object.values(sounds).every(sound => sound.isLoaded());
+}
+
 // UI
 function addTrack(div, wav) {
   let newTrack = new p5.SoundLoop(function (timeFromNow) {
@@ -94,7 +103,6 @@ function addTrack(div, wav) {
 function mySetBPM(bpm) {
   for (let i = 0; i < trackArr.length; i++) {
     trackArr[i].bpm = bpm;
-
   }
   increment = 0
   // increment += (360 / (4 / _bpm * 60)) / 60
@@ -110,16 +118,18 @@ function masterPlay() {
   if (trackArr.length) {
     if (trackArr[0].isPlaying){
       for (let i = 0; i < trackArr.length; i++) {
-        trackArr[i].pause();
+        trackArr[i].stop();
       }
       increment = 0;
       document.getElementById('play-button').value = 'play'
     } else {
       mySetBPM(bpm)
       trackArr[0].start();
-      for (let i = 1; i < trackArr.length; i++) {
-        trackArr[i].syncedStart(trackArr[0])
-      }
+      setTimeout(function(){
+        for (let i = 1; i < trackArr.length; i++) {
+          trackArr[i].syncedStart(trackArr[0])
+        };
+      },500);
       document.getElementById('play-button').value = 'pause'
     }
   }
@@ -266,50 +276,18 @@ function draw () {
   // canvas
   background(104, 104, 104); // 
   translate(width / 2, height / 2) // origin
+  frameRate(fps);
 
-  // play head
-  stroke(164, 155, 165)
-  strokeWeight(4);
-  line(200, 0, 225, 0)
+
 
   // rotation settings
-  frameRate(fps);
-  // if (looper4n.isPlaying) {
-  //   angle += increment / fps
-  // }
-
+  push(); // start rotation
   rotate(angle);
 
 
   //track settings
   stroke(0)
   strokeWeight(3);
-  
-  // // 1/8 note track
-  // fill(69, 34, 52);
-  
-  // let inc;
-  // for (let i = 0; i < 8; i++) {
-  //   inc = 45;
-  //   arc(0,0,400,400, radians(inc*i), radians(inc*(i+1)), PIE)    
-  // }
-
-  // // // 1/5 note track
-  // fill(200, 50, 50, 255);
-  // let deg = [0, 72, 144, 216, 288, 360];
-  // arc(0, 0, 400, 400, radians(deg[0]), radians(deg[1]), PIE);
-  // arc(0, 0, 400, 400, radians(deg[1]), radians(deg[2]), PIE);
-  // arc(0, 0, 400, 400, radians(deg[2]), radians(deg[3]), PIE);
-  // arc(0, 0, 400, 400, radians(deg[3]), radians(deg[4]), PIE);
-  // arc(0, 0, 400, 400, radians(deg[4]), radians(deg[5]), PIE);
-
-  // 1/4 note track
-  // stroke(59,99,94)
-  // fill(76, 59, 77);
-  // arc(0, 0, 300, 300, radians(0), radians(90), PIE)
-  // arc(0, 0, 300, 300, radians(90), radians(180), PIE)
-  // arc(0, 0, 300, 300, radians(180), radians(270), PIE)
-  // arc(0, 0, 300, 300, radians(270), radians(360), PIE)
 
   // generator
   if (trackArr.length) {
@@ -317,32 +295,31 @@ function draw () {
       let radius = (i+2)*100;
       let interval = trackArr[i].interval[0]
       let arcs = {
-        "1": 359.9,
-        "2": 180,
-        "3": 120,
-        "4": 90,
-        "5": 72,
-        "8": 45,
+        1: 359.9,
+        2: 180,
+        3: 120,
+        4: 90,
+        5: 72,
+        8: 45,
       }
       let arcLen = arcs[interval]
-      let colors = [
-        [80, 73, 80],
-        [76, 59, 77],
-        [200,50,50],
-        [69,34,52],
-      ]
-      // let colorsRand = [
-      //   Math.floor(Math.random() * 255),
-      //   Math.floor(Math.random() * 255),
-      //   Math.floor(Math.random() * 255),
-      // ]
-      // fill(...colors[i%colors.length])
-
       fill(trackArrColor[i])
       for (let i = 0; i < interval; i++) {
         arc(0,0, radius, radius, radians(arcLen*i), radians(arcLen*(i+1)), PIE);
       }
     }
+
+    pop(); //end rotation
+
+    // play head
+    let headX = 50 + trackArr.length*50
+    stroke(0)
+    strokeWeight(4);
+    line(headX, 0, headX+25, 0)
+
+    // donut
+    fill(104, 104, 104);
+    circle(0, 0, 100, 100);
   }
 
   // 1/3 note track
@@ -352,9 +329,7 @@ function draw () {
   // arc(0, 0, 200, 200, radians(120), radians(240), PIE)
   // arc(0, 0, 200, 200, radians(240), radians(360), PIE)
 
-  // donut
-  fill(104, 104, 104);
-  circle(0, 0, 100, 100);
+
 
 
 }

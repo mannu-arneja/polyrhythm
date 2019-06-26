@@ -85,6 +85,7 @@ function addTrack(div, wav) {
   }, div);
   newTrack.bpm = bpm
   trackArr.push(newTrack);
+  randColor();
   if (trackArr[0].isPlaying) {
     trackArr[trackArr.length-1].syncedStart(trackArr[0])
   }
@@ -238,6 +239,17 @@ function keyReleased() {
 //   // debugger
 // }
 
+let colorsRand;
+let trackArrColor = [];
+function randColor() {
+  colorsRand = [
+    Math.floor(Math.random() * 255),
+    Math.floor(Math.random() * 255),
+    Math.floor(Math.random() * 255),
+  ]
+  trackArrColor.push(colorsRand)
+}
+
 function draw () {
   
   // test framecount
@@ -300,7 +312,6 @@ function draw () {
   // arc(0, 0, 300, 300, radians(270), radians(360), PIE)
 
   // generator
-  fill(80, 73, 80);
   if (trackArr.length) {
     for (let i = trackArr.length-1; i >= 0; i--) {
       let radius = (i+2)*100;
@@ -314,6 +325,20 @@ function draw () {
         "8": 45,
       }
       let arcLen = arcs[interval]
+      let colors = [
+        [80, 73, 80],
+        [76, 59, 77],
+        [200,50,50],
+        [69,34,52],
+      ]
+      // let colorsRand = [
+      //   Math.floor(Math.random() * 255),
+      //   Math.floor(Math.random() * 255),
+      //   Math.floor(Math.random() * 255),
+      // ]
+      // fill(...colors[i%colors.length])
+
+      fill(trackArrColor[i])
       for (let i = 0; i < interval; i++) {
         arc(0,0, radius, radius, radians(arcLen*i), radians(arcLen*(i+1)), PIE);
       }

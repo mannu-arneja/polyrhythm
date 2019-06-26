@@ -101,12 +101,16 @@ function addTrack(div, wav) {
 }
 
 function mySetBPM(bpm) {
+  if (trackArr[0].isPlaying) {
+    masterPlay();
+  }
   for (let i = 0; i < trackArr.length; i++) {
     trackArr[i].bpm = bpm;
   }
-  increment = 0
   // increment += (360 / (4 / _bpm * 60)) / 60
+  increment = 0 // offset
   increment += radians(360 / (4 / bpm * 60))
+  angle = radians(180);
 }
 
 // master play function --------------------------------------------------------
@@ -261,13 +265,13 @@ function randColor() {
 }
 
 function draw () {
-  
   // test framecount
 
   if (trackArr.length && trackArr[0].isPlaying) {
     if (frameCount % 60 === 0) {
       console.log('tick - seconds')
       // angle = radians((360/(bpm / (4 * 60))));
+      // spm = ((240)/bpm)*60
     }
     angle += increment / fps
   }

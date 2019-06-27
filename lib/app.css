@@ -15,7 +15,7 @@ main {
     position: relative;
     display: flex;
     background-color: rgb(60, 60,60);
-    width: 700px;
+    width: 800px;
 }
 
 .main-container:before,
@@ -60,7 +60,7 @@ main {
     display: flex;
     align-items: center;
     color: white;
-    padding: 25px 20px;
+    padding: 25px 50px;
     font-size: 20px;
 }
 
@@ -71,15 +71,17 @@ main {
 
 .add-track {
     display: flex;
+    align-items: baseline;
     color: white;
-    padding: 5px 10px;
+    padding: 0px 10px;
+    width: 200px;
+    margin: auto;
 }
 
 #track-form {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column;
-    justify-content: space-around;
+    font-size: 17px;
 }
 
 select {
@@ -88,6 +90,11 @@ select {
 
 input[type='submit'] {
     background-color: #9e7fa5;
+}
+
+#remove {
+    background-color: #9e7fa5;
+    margin-left: 5px;
 }
 
 /* logo */

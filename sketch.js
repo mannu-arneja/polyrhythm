@@ -22,7 +22,7 @@ function init() {
     addTrack(div, wav);
     e.preventDefault();
   });
-
+  document.getElementById('remove').addEventListener('click', () => removeTrack());
 }
 
 // p5 Part Loop
@@ -108,6 +108,14 @@ function addTrack(div, wav) {
   randColor();
   if (trackArr[0].isPlaying) {
     trackArr[trackArr.length-1].syncedStart(trackArr[0])
+  }
+}
+
+function removeTrack() {
+  if (trackArr.length) {
+    if (trackArr.length === 1) masterPlay();
+    trackArr.pop().stop();
+    trackArrColor.pop();
   }
 }
 

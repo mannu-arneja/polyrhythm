@@ -98,9 +98,10 @@ let tickCount = 0;
 function addTrack(div, wav) {
   let newTrack = new p5.SoundLoop(function (timeFromNow) {
     sounds[wav].play(timeFromNow);
-    // if (timeFromNow) {
-    //   reSync();
-    // }
+    if (timeFromNow) {
+      // reSync();
+      highlight = true
+    }
   }, div);
   newTrack.bpm = bpm
   trackArr.push(newTrack);
@@ -119,6 +120,12 @@ function addTrack(div, wav) {
 //     angle = radians(0)
 //   }
 // }
+
+function highlight() {
+  highlight = true
+  redraw();
+  console.log('test')
+}
 
 function mySetBPM(bpm) {
   if (trackArr.length && trackArr[0].isPlaying) {
@@ -331,9 +338,9 @@ function draw () {
       let arcLen = arcs[interval]
       fill(trackArrColor[i])
       for (let i = 0; i < interval; i++) {
-        if (angle === radians(arcLen)) {
-          debugger;
-          fill(255)
+        // if (angle === radians(arcLen)) {
+        if (highlight) {
+          fill(155)
         }
         arc(0,0, radius, radius, radians(arcLen*i), radians(arcLen*(i+1)), PIE);
       }
@@ -361,5 +368,5 @@ function draw () {
 
 
 
-
+  highlight = false
 }

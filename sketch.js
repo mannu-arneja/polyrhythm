@@ -1,12 +1,18 @@
+
+
 // handle play button
 window.addEventListener('load', init, false);
 function init() {
   document.getElementById('play-button').addEventListener('click', () => masterPlay());
   bpm = document.getElementById('tempoSlider').value
+  document.getElementById('tempoSlider').addEventListener('input', (e) => {
+    bpm = e.target.valueAsNumber;
+    document.getElementById('tempoVal').innerHTML = bpm
+  })
   document.getElementById('tempoSlider').addEventListener('mouseup', (e) => {
     bpm = e.target.valueAsNumber;
     mySetBPM(bpm);
-    document.getElementById('tempoVal').innerHTML = bpm
+    // document.getElementById('tempoVal').innerHTML = bpm
   })
   document.getElementById('tempoVal').innerHTML = bpm
   document.getElementById('track-form').addEventListener('submit', (e) => {
@@ -87,10 +93,14 @@ function soundsLoaded() {
   return Object.values(sounds).every(sound => sound.isLoaded());
 }
 
+let tickCount = 0;
 // UI
 function addTrack(div, wav) {
   let newTrack = new p5.SoundLoop(function (timeFromNow) {
     sounds[wav].play(timeFromNow);
+    // if (timeFromNow) {
+    //   reSync();
+    // }
   }, div);
   newTrack.bpm = bpm
   trackArr.push(newTrack);
@@ -100,9 +110,20 @@ function addTrack(div, wav) {
   }
 }
 
+// WIP metroname as always playing track[0]?
+
+// function reSync() {
+//   if (trackArr.length && tickCount % trackArr[0].interval[0] === 0) {
+//     tickCount += 1;
+//     console.log('tick measure')
+//     angle = radians(0)
+//   }
+// }
+
 function mySetBPM(bpm) {
-  if (trackArr[0].isPlaying) {
+  if (trackArr.length && trackArr[0].isPlaying) {
     masterPlay();
+    setTimeout(masterPlay(),50)
   }
   for (let i = 0; i < trackArr.length; i++) {
     trackArr[i].bpm = bpm;
@@ -268,10 +289,11 @@ function draw () {
   // test framecount
 
   if (trackArr.length && trackArr[0].isPlaying) {
-    if (frameCount % 60 === 0) {
-      console.log('tick - seconds')
+    spm = ~~(((240)/bpm)*60)
+    if (frameCount % spm === 0) {
+      console.log('draw - measure')
       // angle = radians((360/(bpm / (4 * 60))));
-      // spm = ((240)/bpm)*60
+      // angle = radians(0);
     }
     angle += increment / fps
   }
@@ -309,6 +331,10 @@ function draw () {
       let arcLen = arcs[interval]
       fill(trackArrColor[i])
       for (let i = 0; i < interval; i++) {
+        if (angle === radians(arcLen)) {
+          debugger;
+          fill(255)
+        }
         arc(0,0, radius, radius, radians(arcLen*i), radians(arcLen*(i+1)), PIE);
       }
     }

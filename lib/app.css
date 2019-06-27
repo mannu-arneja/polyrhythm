@@ -15,14 +15,14 @@ main {
     position: relative;
     display: flex;
     background-color: rgb(60, 60,60);
-    width: 660px;
+    width: 700px;
 }
 
 .main-container:before,
 .main-container:after {
     content: '';
     position: absolute;
-    border-width: 32px;
+    border-width: 36px;
     border-style: solid;
     border-color: transparent;
     height: 0;
@@ -43,7 +43,8 @@ main {
 }
 
 .main-button {
-    padding: 15px 20px;
+    padding: 15px;
+    margin-left: 40px;
     font-size: 20px;
     background-color: rgb(60, 60, 60);
     border: none;
@@ -59,7 +60,7 @@ main {
     display: flex;
     align-items: center;
     color: white;
-    padding: 15px 28px;
+    padding: 25px 20px;
     font-size: 20px;
 }
 
@@ -71,19 +72,22 @@ main {
 .add-track {
     display: flex;
     color: white;
-    padding: 5px 35px;
+    padding: 5px 10px;
 }
 
 #track-form {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    align-items: flex-end;
     justify-content: space-around;
 }
 
 select {
     background-color: white;
+}
+
+input[type='submit'] {
+    background-color: #9e7fa5;
 }
 
 /* logo */

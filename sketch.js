@@ -333,6 +333,8 @@ function draw () {
         3: 120,
         4: 90,
         5: 72,
+        6: 60,
+        7: 360/7,
         8: 45,
       }
       let arcLen = arcs[interval]
